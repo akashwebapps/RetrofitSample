@@ -38,28 +38,11 @@ public class NetWorkChecker {
         else{
 
             Toast.makeText(c, "No Network Connection", Toast.LENGTH_SHORT).show();
-            ((Activity) c).finish();
+
             return false;
         }
 
     }
 
-    public static AlertDialog displayMobileDataSettingsDialog(final Activity activity, final Context context, String title, String message){
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(title);
-        builder.setMessage(message);
-        builder.setCancelable(false);
-        builder.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent(Settings.ACTION_DATA_ROAMING_SETTINGS);
-                context.startActivity(intent);
-            }
-        });
-
-        builder.show();
-
-        return builder.create();
-    }
 
 }
