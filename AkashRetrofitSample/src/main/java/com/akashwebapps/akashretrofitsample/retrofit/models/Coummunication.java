@@ -25,12 +25,13 @@ import retrofit2.Response;
 public class Coummunication {
     private Context context;
     private OnCallBackListner listner;
-    public static final String BASE_URL = "";
+    private   String BASE_URL = "";
    public ProgressDialog progressDialog;
 
-    public Coummunication(Context context, OnCallBackListner listner) {
+    public Coummunication(Context context, OnCallBackListner listner,String url) {
         this.context = context;
         this.listner = listner;
+        this.BASE_URL = url;
 
     }
 
@@ -99,7 +100,7 @@ public class Coummunication {
             if (progressDialog != null) {
                 progressDialog.show();
             }
-            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+            ApiInterface apiInterface = ApiClient.getClient(BASE_URL).create(ApiInterface.class);
             Call<String> callMethod = apiInterface.get(url, tag);
             callMethod.enqueue(new Callback<String>() {
                 @Override
@@ -117,7 +118,7 @@ public class Coummunication {
 
                 @Override
                 public void onFailure(Call<String> call, Throwable t) {
-                    Log.e("_responsedata", t.getMessage() + call.request().header("tag"));
+                   // Log.e("_responsedata", t.getMessage() + call.request().header("tag"));
                     onCallBackFaild(call, t);
                 }
             });
@@ -134,7 +135,7 @@ public class Coummunication {
             if (progressDialog != null) {
                 progressDialog.show();
             }
-            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+            ApiInterface apiInterface = ApiClient.getClient(BASE_URL).create(ApiInterface.class);
             Call<String> callMethod = apiInterface.getPostByJsonBody(url, params, tag);
             callMethod.enqueue(new Callback<String>() {
                 @Override
@@ -152,7 +153,7 @@ public class Coummunication {
 
                 @Override
                 public void onFailure(Call<String> call, Throwable t) {
-                    Log.e("_responsedata", t.getMessage() + call.request().header("tag"));
+                  //  Log.e("_responsedata", t.getMessage() + call.request().header("tag"));
                     onCallBackFaild(call, t);
                 }
             });
@@ -168,19 +169,19 @@ public class Coummunication {
                 progressDialog.show();
             }
 
-            ApiInterface service = ApiClient.getClient().create(ApiInterface.class);
+            ApiInterface service = ApiClient.getClient(BASE_URL).create(ApiInterface.class);
 
             Call<String> stringCall = service.UploadWithJsonBody(url, getParam(param), Params.createMultiPart(part), tag);
             stringCall.enqueue(new Callback<String>() {
                 @Override
                 public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
 
-                    try {
+                   /* try {
                         Log.e(tag + "_responsedata", String.valueOf(new JSONObject(response.body())));
 
                     } catch (JSONException e) {
                         e.printStackTrace();
-                    }
+                    }*/
 
                     onCallBackSuccess(call, response);
                 }
@@ -207,7 +208,7 @@ public class Coummunication {
             if (progressDialog != null) {
                 progressDialog.show();
             }
-            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+            ApiInterface apiInterface = ApiClient.getClient(BASE_URL).create(ApiInterface.class);
             Call<String> callMethod = apiInterface.getPostByFormData(url, params, tag);
             callMethod.enqueue(new Callback<String>() {
                 @Override
@@ -225,7 +226,7 @@ public class Coummunication {
 
                 @Override
                 public void onFailure(Call<String> call, Throwable t) {
-                    Log.e("_responsedata", t.getMessage() + call.request().header("tag"));
+                  //  Log.e("_responsedata", t.getMessage() + call.request().header("tag"));
                     onCallBackFaild(call, t);
                 }
             });
@@ -241,19 +242,19 @@ public class Coummunication {
                 progressDialog.show();
             }
 
-            ApiInterface service = ApiClient.getClient().create(ApiInterface.class);
+            ApiInterface service = ApiClient.getClient(BASE_URL).create(ApiInterface.class);
 
             Call<String> stringCall = service.UploadWithFormData(url, getParam(param), Params.createMultiPart(part), tag);
             stringCall.enqueue(new Callback<String>() {
                 @Override
                 public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
 
-                    try {
+                 /*   try {
                         Log.e(tag + "_responsedata", String.valueOf(new JSONObject(response.body())));
 
                     } catch (JSONException e) {
                         e.printStackTrace();
-                    }
+                    }*/
 
                     onCallBackSuccess(call, response);
                 }
@@ -286,12 +287,12 @@ public class Coummunication {
                 progressDialog.dismiss();
             }
 
-            Log.e("response_body" + call.request().header("tag"), response.body());
+           // Log.e("response_body" + call.request().header("tag"), response.body());
 
             try {
                 listner.OnCallBackSuccess(call.request().header("tag"), new JSONObject(response.body()));
             } catch (JSONException e) {
-                listner.OnCallBackError(call.request().header("tag"), "failed", -1);
+                listner.OnCallBackError(call.request().header("tag"), e.getMessage(), -1);
                 e.printStackTrace();
             }
         }

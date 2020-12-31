@@ -10,11 +10,11 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class ApiClient {
 
-    public static final String BASE_URL = "";
+   // public static final String BASE_URL = "";
     private static Retrofit retrofit = null;
     private static OkHttpClient.Builder   httpClient = new OkHttpClient.Builder();
 
-    public static Retrofit getClient() {
+    public static Retrofit getClient(String BASE_URL) {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
         httpClient.addInterceptor(logging);
