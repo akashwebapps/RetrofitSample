@@ -19,24 +19,28 @@ import retrofit2.http.Url;
 
 public interface ApiInterface {
 
+    @GET()
+    Call<String> getRequest(@Url String url, @Header("tag") String tag);
+
+
     // For posting from data
 
     @FormUrlEncoded
     @POST()
-    Call<String> getPostByFormData (@Url String url, @FieldMap HashMap<String, String> params , @Header("tag") String tag);
+    Call<String> postRequestForm(@Url String url, @FieldMap HashMap<String, String> params , @Header("tag") String tag);
+
+
     @Multipart
     @POST()
-    Call<String> UploadWithFormData(@Url String url, @PartMap HashMap<String, RequestBody> param, @Part MultipartBody.Part file, @Header("tag") String tag);
+    Call<String> fileUploadForm(@Url String url, @PartMap HashMap<String, RequestBody> param, @Part MultipartBody.Part file, @Header("tag") String tag);
 
     // For posting json data
 
 
     @Headers({"Content-Type: application/json"})
     @POST()
-    Call<String> getPostByJsonBody(@Url String url, @Body HashMap<String, String> params, @Header("tag") String tag);
+    Call<String> postRequestJson(@Url String url, @Body HashMap<String, String> params, @Header("tag") String tag);
 
-    @GET()
-    Call<String> get(@Url String url, @Header("tag") String tag);
 
     @Multipart
     @POST()

@@ -3,36 +3,43 @@ package com.akashwebapps.retrofitsample;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.Toast;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 
-import org.json.JSONException;
+import com.akashwebapps.akashretrofitsample.retrofit.interfaces.OnCallBackListner;
+import com.akashwebapps.akashretrofitsample.retrofit.models.ApiClient;
+import com.akashwebapps.akashretrofitsample.retrofit.models.ApiRequest;
+
 import org.json.JSONObject;
 
-import java.util.HashMap;
+public class MainActivity extends AppCompatActivity implements OnCallBackListner {
 
-public class MainActivity extends AppCompatActivity  {
-
+    ApiRequest apiRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        apiRequest = new ApiRequest(this, this, "https://jsonplaceholder.typicode.com/comments/");
 
 
-
-
+       // apiRequest.getRequest("https://jsonplaceholder.typicode.com/comments", "jdd", true);
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        apiRequest.getRequest("https://jsonplaceholder.typicode.com/comments", "jdd", true);
 
+    }
 
+    @Override
+    public void OnCallBackSuccess(String tag, JSONObject jsonObject) {
+
+    }
+
+    @Override
+    public void OnCallBackError(String tag, String error, int i) {
+
+    }
 }

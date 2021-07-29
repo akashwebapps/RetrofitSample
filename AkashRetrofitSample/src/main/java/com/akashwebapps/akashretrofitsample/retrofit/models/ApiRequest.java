@@ -1,12 +1,17 @@
 package com.akashwebapps.akashretrofitsample.retrofit.models;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.util.Log;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.view.LayoutInflater;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.akashwebapps.akashretrofitsample.R;
 import com.akashwebapps.akashretrofitsample.retrofit.NetWorkChecker;
 import com.akashwebapps.akashretrofitsample.retrofit.interfaces.ApiInterface;
 import com.akashwebapps.akashretrofitsample.retrofit.interfaces.OnCallBackListner;
@@ -22,13 +27,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Coummunication {
+public class ApiRequest {
     private Context context;
     private OnCallBackListner listner;
-    private   String BASE_URL = "";
-   public ProgressDialog progressDialog;
+    private String BASE_URL = "";
+    public Dialog progressDialog;
 
-    public Coummunication(Context context, OnCallBackListner listner,String url) {
+    public ApiRequest(Context context, OnCallBackListner listner, String url) {
         this.context = context;
         this.listner = listner;
         this.BASE_URL = url;
@@ -40,68 +45,27 @@ public class Coummunication {
             progressDialog.dismiss();
             progressDialog = null;
         }
-        progressDialog = new ProgressDialog(context);
-        progressDialog.setMessage("Please Wait...");
+        progressDialog = new Dialog(context);
         progressDialog.setCancelable(false);
+        progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        progressDialog.setContentView(R.layout.dialog);
 
 
     }
 
 
-
-  /*  // for credential
-    public void callPOST(HashMap<String, String> params, String tag) {
-
+    public void getRequest(String url, String tag, boolean loader) {
         if (NetWorkChecker.check(context)) {
 
-            loader();
-
-            if (progressDialog != null) {
-                progressDialog.show();
-            }
-            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-            Call<String> callMethod = apiInterface.getPost(BASE_URL, params, tag);
-            callMethod.enqueue(new Callback<String>() {
-
-
-
-                @Override
-                public void onResponse(Call<String> call, Response<String> response) {
-
-                    try {
-                        Log.e(tag + "_responsedata", String.valueOf(new JSONObject(response.body())));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                    onCallBackSuccess(call, response);
-
+            if (loader) {
+                loader();
+                if (progressDialog != null) {
+                    progressDialog.show();
                 }
-
-
-                @Override
-                public void onFailure(Call<String> call, Throwable t) {
-                    Log.e("_responsedata", t.getMessage() + call.request().header("tag"));
-                    onCallBackFaild(call, t);
-                }
-
-
-            });
-        }
-
-    }*/
-
-
-
-
-    public void callGetRequest(String url,  String tag) {
-        if (NetWorkChecker.check(context)) {
-            loader();
-            if (progressDialog != null) {
-                progressDialog.show();
             }
+
             ApiInterface apiInterface = ApiClient.getClient(BASE_URL).create(ApiInterface.class);
-            Call<String> callMethod = apiInterface.get(url, tag);
+            Call<String> callMethod = apiInterface.getRequest(url, tag);
             callMethod.enqueue(new Callback<String>() {
                 @Override
                 public void onResponse(Call<String> call, Response<String> response) {
@@ -118,7 +82,7 @@ public class Coummunication {
 
                 @Override
                 public void onFailure(Call<String> call, Throwable t) {
-                   // Log.e("_responsedata", t.getMessage() + call.request().header("tag"));
+                    // Log.e("_responsedata", t.getMessage() + call.request().header("tag"));
                     onCallBackFaild(call, t);
                 }
             });
@@ -127,16 +91,17 @@ public class Coummunication {
     }
 
 
-
-// JSON BODY
-    public void callPOSTwithJsonBody(String url, HashMap<String, String> params, String tag) {
+    // JSON BODY
+    public void postRequestJson(String url, HashMap<String, String> params, String tag, boolean loader) {
         if (NetWorkChecker.check(context)) {
-            loader();
-            if (progressDialog != null) {
-                progressDialog.show();
+            if (loader) {
+                loader();
+                if (progressDialog != null) {
+                    progressDialog.show();
+                }
             }
             ApiInterface apiInterface = ApiClient.getClient(BASE_URL).create(ApiInterface.class);
-            Call<String> callMethod = apiInterface.getPostByJsonBody(url, params, tag);
+            Call<String> callMethod = apiInterface.postRequestJson(url, params, tag);
             callMethod.enqueue(new Callback<String>() {
                 @Override
                 public void onResponse(Call<String> call, Response<String> response) {
@@ -153,63 +118,27 @@ public class Coummunication {
 
                 @Override
                 public void onFailure(Call<String> call, Throwable t) {
-                  //  Log.e("_responsedata", t.getMessage() + call.request().header("tag"));
+                    //  Log.e("_responsedata", t.getMessage() + call.request().header("tag"));
                     onCallBackFaild(call, t);
                 }
             });
         }
 
     }
-
-    public void callFileUploadwithJsonBody(String url, @NonNull HashMap<String, String> param, @NonNull PART part, final String tag) {
-
-        if (NetWorkChecker.check(context)) {
-            loader();
-            if (progressDialog != null) {
-                progressDialog.show();
-            }
-
-            ApiInterface service = ApiClient.getClient(BASE_URL).create(ApiInterface.class);
-
-            Call<String> stringCall = service.UploadWithJsonBody(url, getParam(param), Params.createMultiPart(part), tag);
-            stringCall.enqueue(new Callback<String>() {
-                @Override
-                public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
-
-                   /* try {
-                        Log.e(tag + "_responsedata", String.valueOf(new JSONObject(response.body())));
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }*/
-
-                    onCallBackSuccess(call, response);
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
-
-                    onCallBackFaild(call, t);
-
-                }
-            });
-        }
-
-    }
-
-
 
 
     //FORM Data
 
-    public void callPOSTwithFormData(String url, HashMap<String, String> params, String tag) {
+    public void postRequestForm(String url, HashMap<String, String> params, String tag, boolean loader) {
         if (NetWorkChecker.check(context)) {
-            loader();
-            if (progressDialog != null) {
-                progressDialog.show();
+            if (loader) {
+                loader();
+                if (progressDialog != null) {
+                    progressDialog.show();
+                }
             }
             ApiInterface apiInterface = ApiClient.getClient(BASE_URL).create(ApiInterface.class);
-            Call<String> callMethod = apiInterface.getPostByFormData(url, params, tag);
+            Call<String> callMethod = apiInterface.postRequestForm(url, params, tag);
             callMethod.enqueue(new Callback<String>() {
                 @Override
                 public void onResponse(Call<String> call, Response<String> response) {
@@ -226,7 +155,7 @@ public class Coummunication {
 
                 @Override
                 public void onFailure(Call<String> call, Throwable t) {
-                  //  Log.e("_responsedata", t.getMessage() + call.request().header("tag"));
+                    //  Log.e("_responsedata", t.getMessage() + call.request().header("tag"));
                     onCallBackFaild(call, t);
                 }
             });
@@ -234,17 +163,19 @@ public class Coummunication {
 
     }
 
-    public void callFileUploadwithFormData(String url, @NonNull HashMap<String, String> param, @NonNull PART part, final String tag) {
+    public void fileUploadForm(String url, @NonNull HashMap<String, String> param, @NonNull PART part, final String tag, boolean loader) {
 
         if (NetWorkChecker.check(context)) {
-            loader();
-            if (progressDialog != null) {
-                progressDialog.show();
+            if (loader) {
+                loader();
+                if (progressDialog != null) {
+                    progressDialog.show();
+                }
             }
 
             ApiInterface service = ApiClient.getClient(BASE_URL).create(ApiInterface.class);
 
-            Call<String> stringCall = service.UploadWithFormData(url, getParam(param), Params.createMultiPart(part), tag);
+            Call<String> stringCall = service.fileUploadForm(url, getParam(param), Params.createMultiPart(part), tag);
             stringCall.enqueue(new Callback<String>() {
                 @Override
                 public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
@@ -271,23 +202,15 @@ public class Coummunication {
     }
 
 
-
-
-
-
-
-
-
-
     public void onCallBackSuccess(Call<String> call, Response<String> response) {
 
-        if (response.isSuccessful()){
+        if (response.isSuccessful()) {
 
             if (progressDialog != null) {
                 progressDialog.dismiss();
             }
 
-           // Log.e("response_body" + call.request().header("tag"), response.body());
+            // Log.e("response_body" + call.request().header("tag"), response.body());
 
             try {
                 listner.OnCallBackSuccess(call.request().header("tag"), new JSONObject(response.body()));
@@ -295,9 +218,7 @@ public class Coummunication {
                 listner.OnCallBackError(call.request().header("tag"), e.getMessage(), -1);
                 e.printStackTrace();
             }
-        }
-
-        else {
+        } else {
             if (progressDialog != null) {
                 progressDialog.dismiss();
             }
@@ -306,15 +227,13 @@ public class Coummunication {
         }
 
 
-
     }
 
 
     public void onCallBackFaild(Call<String> call, Throwable t) {
 
 
-        try
-        {
+        try {
             if (progressDialog != null) {
                 progressDialog.dismiss();
             }
@@ -323,15 +242,12 @@ public class Coummunication {
             }
 
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
 
             listner.OnCallBackError(call.request().header("tag"), e.getMessage(), -1);
 
 
         }
-
-
 
 
     }
