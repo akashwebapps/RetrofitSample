@@ -2,6 +2,7 @@ package com.akashwebapps.retrofitsample;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import com.akashwebapps.akashretrofitsample.retrofit.interfaces.OnCallBackListner;
@@ -20,6 +21,8 @@ public class MainActivity extends AppCompatActivity implements OnCallBackListner
         setContentView(R.layout.activity_main);
 
         apiRequest = new ApiRequest(this, this, "https://jsonplaceholder.typicode.com/comments/");
+        apiRequest.setDialogColor(Color.YELLOW);
+
 
 
        // apiRequest.getRequest("https://jsonplaceholder.typicode.com/comments", "jdd", true);

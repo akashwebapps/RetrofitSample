@@ -15,6 +15,7 @@ import com.akashwebapps.akashretrofitsample.R;
 import com.akashwebapps.akashretrofitsample.retrofit.NetWorkChecker;
 import com.akashwebapps.akashretrofitsample.retrofit.interfaces.ApiInterface;
 import com.akashwebapps.akashretrofitsample.retrofit.interfaces.OnCallBackListner;
+import com.github.ybq.android.spinkit.SpinKitView;
 
 
 import org.json.JSONException;
@@ -33,12 +34,20 @@ public class ApiRequest {
     private String BASE_URL = "";
     public Dialog progressDialog;
 
+    public int dialogColor;
+
+
     public ApiRequest(Context context, OnCallBackListner listner, String url) {
         this.context = context;
         this.listner = listner;
         this.BASE_URL = url;
 
     }
+
+    public void setDialogColor(int color) {
+        this.dialogColor = color;
+    }
+
 
     private void loader() {
         if (progressDialog != null) {
@@ -49,6 +58,9 @@ public class ApiRequest {
         progressDialog.setCancelable(false);
         progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         progressDialog.setContentView(R.layout.dialog);
+        SpinKitView spinKitView = progressDialog.findViewById(R.id.spin_kit);
+        spinKitView.setColor(dialogColor != 0 ? dialogColor : Color.BLUE);
+
 
 
     }
